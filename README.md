@@ -1,47 +1,28 @@
 <h1> SRT-Audio </h1>
-<p align="center">
-<img src="https://img.shields.io/github/repo-size/magnusjwatson2786/SRT-Audio">
-<img src="https://img.shields.io/github/last-commit/magnusjwatson2786/SRT-Audio">
-<img src="https://img.shields.io/github/license/magnusjwatson2786/SRT-Audio">
-</p>
 
-Convert your subtitles into audio tracks for whatever reason you might need.
+Create audio file from srt file.
 
-I will be making a GUI version of this program in future.
+## About this fork
 
-## Screenshots
-![Alt text](screenshots/img1.png?raw=true "SRT-Audio")
-
-## Dependencies
-- [Python]
-- [Pyttsx3] (for text-to-speech)
-- [Pydub] (for audio manipulation)
+This is a fork of https://github.com/magnusjwatson2786/SRT-Audio
+modified to use the say command on Macs.
 
 
-## Run
-To run this program, clone it to your local machine using: 
+## Install
+To install this program, clone it to your local machine and cd into it and:
+
 ```sh
-git clone https://github.com/magnusjwatson2786/SRT-Audio.git
-```
-then cd to the repo directory and hit:.
-```sh
-python -m pip install -r requirements.txt --user
-python tts.py
-```
-Or just double-click on the start.bat file to run.
-
-Note:  Mac OS X / Linux users may need to run the following before executing the script.
-```sh
-chmod +x start.sh
+python3.11 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
 ```
 
-## Usage
-
-1. Replace the values for `srtpath` and `sppath` variables in the `tts.py` file with the path to your srt file and output audio file respectively.
-
-2. Run as specified above.
-
-Simple as that!
+## Usage examples
+```
+python tts.py test1.srt
+python tts.py test1.srt -v Samantha
+python tts.py test1.srt --voice "Fred" -o out.wav
+```
 
 ## License
 
