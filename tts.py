@@ -2,20 +2,21 @@ import parsesrt,os,pyttsx3, time
 from pydub import AudioSegment as adseg, silence
 from pydub import effects
 
+import subprocess
 srtpath="test1.srt"
 sppath="speech1"
 threads=[]
 parsesrt.parse(srtpath)
 print(len(parsesrt.lns), "subtitles parsed")
 # time.sleep(2)
-engine = pyttsx3.init()
 
 if not os.path.exists(sppath):
     os.makedirs(sppath)
 
 def ttsx(x):
-    engine.save_to_file(parsesrt.lns[x] , os.path.join(sppath,str(x)+".wav"))
-    engine.runAndWait()
+    out = os.path.join(sppath, f"{x}.aiff")
+    subprocess.run(["say", "-o", out, "--", parsesrt.lns[x]], check=True)
+
 
 def getTime(st:str,idx:int)->int:
     a=st.split(" --> ")[idx]
@@ -62,12 +63,12 @@ def compile():
             nextime=endtime
         midlength=nextime-endtime
         # compensate=midlength*0.25
-        part=remove_trailing_silence(adseg.from_file(os.path.join(sppath,str(i)+".wav")))
+        part = remove_trailing_silence(adseg.from_file(os.path.join(sppath, str(i) + ".aiff")))
         # if (len(part) + len(holder))>endtime:
         if len(part) > sublength:
             new_speed=len(part)/(sublength)
             part=part.speedup(new_speed,150,0)
-        
+
         holder=holder.append(part, crossfade=crsfade)
         diff = nextime-len(holder)
         # blanktrack=nextime-endtime
@@ -94,8 +95,9 @@ nl=len(parsesrt.lns.keys())
 
 printProgressBar(0, 100, prefix = 'TTS:', suffix = 'Converted', length = 50)
 for key in parsesrt.lns.keys():
-    engine.save_to_file(parsesrt.lns[key], os.path.join(sppath, str(key) + ".wav"))
-engine.runAndWait()
+    # print(key)
+    ttsx(key) #--SKIP FOR TESTING
+    printProgressBar(key, nl, prefix = 'TTS:', suffix = 'Converted', length = 50)
 
 print("tts finished")
 
