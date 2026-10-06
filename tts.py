@@ -6,6 +6,7 @@ srtpath="test1.srt"
 sppath="speech1"
 threads=[]
 parsesrt.parse(srtpath)
+print(len(parsesrt.lns), "subtitles parsed")
 # time.sleep(2)
 engine = pyttsx3.init()
 
@@ -93,9 +94,8 @@ nl=len(parsesrt.lns.keys())
 
 printProgressBar(0, 100, prefix = 'TTS:', suffix = 'Converted', length = 50)
 for key in parsesrt.lns.keys():
-    # print(key)
-    ttsx(key) #--SKIP FOR TESTING
-    printProgressBar(key, nl, prefix = 'TTS:', suffix = 'Converted', length = 50)
+    engine.save_to_file(parsesrt.lns[key], os.path.join(sppath, str(key) + ".wav"))
+engine.runAndWait()
 
 print("tts finished")
 
