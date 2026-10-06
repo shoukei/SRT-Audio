@@ -1,11 +1,27 @@
+# Usage:
+# python tts.py test1.srt
+# python tts.py test1.srt -v Samantha
+# python tts.py test1.srt --voice "Daniel" -o out.wav
+
 import parsesrt,os,pyttsx3, time
 from pydub import AudioSegment as adseg, silence
 from pydub import effects
 
 import subprocess
-srtpath="test1.srt"
-sppath="speech1"
+
+import argparse, subprocess
+
+parser = argparse.ArgumentParser(description="Convert an SRT file into a timed audio track using macOS say.")
+parser.add_argument("srt", help="path to the input .srt file")
+parser.add_argument("-v", "--voice", default=None, help="voice name for say (list them with: say -v '?')")
+parser.add_argument("-o", "--output", default="full2.wav", help="output audio file (default: full2.wav)")
+args = parser.parse_args()
+
+srtpath = args.srt
+voice = args.voice
+sppath = os.path.splitext(os.path.basename(srtpath))[0] + "_speech"
 threads=[]
+
 parsesrt.parse(srtpath)
 print(len(parsesrt.lns), "subtitles parsed")
 # time.sleep(2)
@@ -15,8 +31,11 @@ if not os.path.exists(sppath):
 
 def ttsx(x):
     out = os.path.join(sppath, f"{x}.aiff")
-    subprocess.run(["say", "-o", out, "--", parsesrt.lns[x]], check=True)
-
+    cmd = ["say"]
+    if voice:
+        cmd += ["-v", voice]
+    cmd += ["-o", out, "--", parsesrt.lns[x]]
+    subprocess.run(cmd, check=True)
 
 def getTime(st:str,idx:int)->int:
     a=st.split(" --> ")[idx]
@@ -78,7 +97,7 @@ def compile():
         # lastime-=compensate
         printProgressBar(i, nl, prefix = 'Compiling:', suffix = 'Complete', length = 50)
 
-    holder.export("full2.wav", format="wav")
+    holder.export(args.output, format="wav")
     print("compilation finished")
 # # for key in parsesrt.tsmp.keys():
 # #     part=adseg.from_file(os.path.join(sppath,str(key)+".wav"))
